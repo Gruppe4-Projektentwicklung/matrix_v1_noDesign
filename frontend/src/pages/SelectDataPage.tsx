@@ -6,7 +6,7 @@ import { ResetButton } from '../components/ResetButton';
 import { useTranslation } from 'react-i18next';
 import { hasSessionStarted, getSessionId, setPageStatus } from '../utils/session';
 import { logEvent } from '../api/logEvent';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography, Paper } from '@mui/material';
 
 interface Props {
   aktuelleIdeensammlung: string;
@@ -33,65 +33,60 @@ export const SelectDataPage = ({
       navigate('/', { replace: true });
     }
   }, [navigate]);
-  return (
-    <Box>
-      <Box sx={{ mt: 4, mb: 3, display: 'flex', justifyContent: 'space-between' }}>
-        <ResetButton />
 
-        <Button
-          variant="contained"
-          onClick={() => {
-            logEvent(getSessionId(), 'select-data', {
-              ideenSammlung: aktuelleIdeensammlung,
-              kombiSammlung: aktuelleKombiSammlung,
-            });
-            setPageStatus('select-data', 'ok');
-            navigate('/ideas');
-          }}
-        >
+  const handleNext = () => {
+    logEvent(getSessionId(), 'select-data', {
+      ideenSammlung: aktuelleIdeensammlung,
+      kombiSammlung: aktuelleKombiSammlung,
+    });
+    setPageStatus('select-data', 'ok');
+    navigate('/ideas');
+  };
+
+  return (
+    <Box sx={{ px: 2, py: 4 }}>
+      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <ResetButton />
+        <Button variant="contained" onClick={handleNext}>
           {t('next')}
         </Button>
       </Box>
 
-        <div className="flex gap-4">
-          <button
-            onClick={() => {
-              logEvent(getSessionId(), 'select-data', {
-                ideenSammlung: aktuelleIdeensammlung,
-                kombiSammlung: aktuelleKombiSammlung,
-              });
-              setPageStatus('select-data', 'ok');
-              navigate('/ideas');
-            }}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
-          >
-            {t('next')}
-          </button>
-        </div>
-      </div>
-      <h2 className="text-lg font-semibold text-center mb-4">
+      <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+        <Button variant="contained" onClick={handleNext}>
+          {t('next')}
+        </Button>
+      </Box>
+
+      <Typography variant="h5" align="center" gutterBottom>
         {t('masterDataSelectionTitle')}
-      </h2>
+      </Typography>
 
       <CollectionSelectorIdeas
         aktuelleSammlungName={aktuelleIdeensammlung}
         onSammlungChange={onIdeenSammlungChange}
         onUpload={onIdeenUpload}
       />
+
       <CollectionSelectorKombis
         aktuelleSammlungName={aktuelleKombiSammlung}
         onSammlungChange={onKombiSammlungChange}
         onUpload={onKombiUpload}
       />
 
-    </Box>
-
-      <div className="bg-[#f8fafc] p-6 rounded-xl shadow mb-8">
-        <p className="text-sm text-gray-700 text-center">
+      <Paper
+        elevation={2}
+        sx={{
+          mt: 4,
+          p: 3,
+          borderRadius: 3,
+          backgroundColor: '#f8fafc',
+        }}
+      >
+        <Typography variant="body2" align="center" sx={{ color: 'text.secondary' }}>
           {t('selectDataInfo')}
-        </p>
-      </div>
-    </div>
-
+        </Typography>
+      </Paper>
+    </Box>
   );
 };
